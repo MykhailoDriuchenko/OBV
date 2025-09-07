@@ -1,0 +1,220 @@
+{% extends "base.html" %} {% block content %}
+<div class="content-wrapper">
+
+    <div class="ad-detail">
+        <h2>{{ ad[2] }}</h2>
+        <div class="ad-content">
+            {% if ad[5] %}
+            <div class="ad-image-wrapper">
+                <img src="/static/uploads/{{ ad[5] }}" alt="{{ ad[2] }}">
+            </div>
+            {% endif %}
+
+            <div class="ad-info">
+                <p class="ad-price"><b>Цена:</b> {{ ad[4] }}₴</p>
+                <p class="ad-description"><b>Описание:</b> {{ ad[3] }}</p>
+
+                <div class="ad-contacts">
+                    <h4>Контакты:</h4>
+                    <p>tg:</p>
+                    <p>tg:</p>
+                    <p>tg:</p>
+                </div>
+
+                {% if user and user[3] == "admin" %}
+                <div class="admin-actions">
+                    <a href="/edit/{{ ad[0] }}" class="btn">Редактировать</a>
+                    <form action="/delete/{{ ad[0] }}" method="post" class="admin-actions-form">
+                        <button type="submit" class="btn delete">Удалить</button>
+                    </form>
+                </div>
+                {% elif user %} {% if user and user[3] == "admin" %}
+                <form action="/delete/{{ ad[0] }}" method="post" style="display:inline;">
+                    <button type="submit" onclick="return confirm('Вы точно хотите удалить объявление?');">Удалить</button>
+                </form>
+                {% endif %}
+
+                <form action="/favorite/{{ ad[0] }}" method="post" class="favorite-form">
+                    <button type="submit" class="btn favorite-btn">
+                    {% if ad[0] in fav_ids %}
+                        ❤️ Удалить из избранного
+                    {% else %}
+                        🤍 В избранное
+                    {% endif %}
+                    </button>
+                </form>
+                {% endif %}
+
+                <a href="/" class="btn back-btn">← Назад к списку объявлений</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'footer.html' %}
+
+<style>
+    body,
+    html {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        font-family: Arial, sans-serif;
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+    
+    .content-wrapper {
+        flex: 1;
+        padding: 20px;
+    }
+    /* ===== Header ===== */
+    
+    .main-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #1e1e1e;
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .main-header h1 {
+        margin: 0;
+        font-size: 24px;
+    }
+    
+    .main-header nav a {
+        margin-left: 10px;
+        color: #e0e0e0;
+        text-decoration: none;
+    }
+    
+    .main-header nav a:hover {
+        color: #4b5dff4d;
+    }
+    /* ===== Ad Detail ===== */
+    
+    .ad-detail {
+        max-width: 900px;
+        margin: 0 auto;
+        background-color: #1e1e1e;
+        padding: 20px;
+        border-radius: 10px;
+    }
+    
+    .ad-detail h2 {
+        margin-top: 0;
+        font-size: 28px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .ad-content {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    /* ===== Image ===== */
+    
+    .ad-image-wrapper {
+        flex: 1 1 300px;
+        text-align: center;
+    }
+    
+    .ad-image-wrapper img {
+        max-width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+    /* ===== Info ===== */
+    
+    .ad-info {
+        flex: 1 1 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+    
+    .ad-price {
+        font-size: 20px;
+        color: #76d5f1;
+        margin: 10px 0;
+    }
+    
+    .ad-description {
+        font-size: 16px;
+        color: #cfcfcf;
+        margin: 10px 0 20px 0;
+    }
+    
+    .ad-contacts h4 {
+        margin-bottom: 5px;
+    }
+    
+    .ad-contacts p {
+        font-size: 14px;
+        color: #aaa;
+        margin: 0 0 15px 0;
+    }
+    /* ===== Buttons ===== */
+    
+    .btn {
+        display: inline-block;
+        background-color: #4b5dff4d;
+        color: #fff;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        transition: background 0.3s;
+    }
+    
+    .btn:hover {
+        background-color: #ff6b7a;
+    }
+    
+    .btn.delete {
+        background-color: #ff4b5c;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .favorite-btn {
+        background-color: #4b5dff4d;
+        border: none;
+        cursor: pointer;
+        color: #ffffff;
+        font-size: 16px;
+    }
+    
+    .back-btn {
+        display: inline-block;
+    }
+    /* ===== Admin Actions ===== */
+    
+    .admin-actions {
+        margin-bottom: 20px;
+    }
+    
+    .admin-actions-form {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+    }
+    /* ===== Адаптив ===== */
+    
+    @media (max-width: 768px) {
+        .ad-content {
+            flex-direction: column;
+            align-items: center;
+        }
+        .ad-info {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}

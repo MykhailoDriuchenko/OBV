@@ -1,0 +1,160 @@
+{% extends "base.html" %} {% block content %}
+<div class="content-wrapper">
+    <h1>Избранные объявления</h1>
+
+    <div class="ads-container">
+        {% for ad in ads %}
+        <div class="ad-card" onclick="location.href='/ad/{{ ad[0] }}'">
+            {% if ad[5] %}
+            <div class="image-wrapper">
+                <img src="/static/uploads/{{ ad[5] }}" class="ad-image">
+            </div>
+            {% endif %}
+
+            <h3>{{ ad[2] }}</h3>
+            <p class="ad-price">{{ ad[4] }}₴</p>
+
+            {% if user %}
+            <form action="/favorite/{{ ad[0] }}" method="post" class="favorite-form" onClick="event.stopPropagation();">
+                <button type="submit" class="favorite-btn {% if ad[0] in fav_ids %}active{% endif %}">
+                    <svg class="heart" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
+                                 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09
+                                 C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5
+                                 c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </button>
+            </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<script>
+    // Предотвращаем всплытие при клике на кнопке избранного
+    document.querySelectorAll('.favorite-form').forEach(form => {
+        form.addEventListener('click', e => e.stopPropagation());
+    });
+</script>
+
+<style>
+    body,
+    html {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #121212;
+        color: #e0e0e0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .content-wrapper {
+        flex: 1;
+        padding: 20px;
+    }
+    /* ===== Cards ===== */
+    
+    .ads-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        justify-items: center;
+        padding: 20px 0;
+    }
+    
+    .ad-card {
+        background: #1e1e1e;
+        border-radius: 10px;
+        width: 280px;
+        cursor: pointer;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+    }
+    
+    .ad-card:hover {
+        transform: translateY(-8px) scale(1.03);
+        box-shadow: 0 12px 25px rgba(75, 93, 255, 0.5);
+    }
+    
+    .ad-image {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        display: block;
+        border-bottom: 1px solid #333;
+        transition: transform 0.3s ease;
+    }
+    
+    .ad-card:hover .ad-image {
+        transform: scale(1.05);
+    }
+    
+    h3 {
+        margin: 12px 10px 5px 10px;
+        font-size: 19px;
+    }
+    
+    .ad-price {
+        margin: 0 10px 10px 10px;
+        font-size: 16px;
+        color: #76d5f1;
+    }
+    /* ===== Favorite button ===== */
+    
+    .favorite-form {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        margin: 0;
+        z-index: 2;
+    }
+    
+    .favorite-btn {
+        background: rgba(0, 0, 0, 0.5);
+        border: none;
+        cursor: pointer;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s, transform 0.2s;
+    }
+    
+    .favorite-btn:hover {
+        background: rgba(255, 75, 92, 0.2);
+        transform: scale(1.2);
+    }
+    
+    .heart {
+        fill: gray;
+        width: 24px;
+        height: 24px;
+        transition: fill 0.3s, transform 0.2s;
+    }
+    
+    .favorite-btn.active .heart {
+        fill: red;
+        transform: scale(1.3);
+    }
+    /* ===== Адаптив ===== */
+    
+    @media (max-width: 768px) {
+        .ads-container {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+        .ad-card {
+            width: 95%;
+        }
+    }
+</style>
+{% endblock %}
